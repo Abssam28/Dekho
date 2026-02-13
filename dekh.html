@@ -9,7 +9,7 @@
 body{margin:0;font-family:'Poppins',sans-serif;overflow:hidden}
 .page{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;pointer-events:none;transition:opacity .6s ease}
 .page.active{opacity:1;pointer-events:auto}
-.card{background:rgba(255,255,255,0);padding:28px;border-radius:24px;max-width:420px;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,0.7);animation:pop .5s ease;position:relative}
+.card{background:rgba(255,255,255,0);backdrop-filter:blur(0);padding:28px;border-radius:24px;max-width:420px;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,0.7);animation:pop .5s ease;position:relative}
 @keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 h1{margin:0 0 10px 0}
 button{border:none;padding:12px 22px;margin-top:20px;font-size:16px;border-radius:16px;cursor:pointer;background:rgba(30,144,255,0.85);color:#fff;backdrop-filter:blur(6px);box-shadow:0 10px 25px rgba(0,0,0,0.4);transition:.15s;outline:none}
@@ -34,7 +34,7 @@ button:focus{outline:none;}
 
 <!-- Intro Page -->
 <div class="page active" id="intro" style="background-image:url('https://files.catbox.moe/8gbfrt.jpg');">
-    <button style="font-size:18px;padding:16px 28px;border-radius:20px;" onclick="go('intro','page1'); startMusic()">TAKE A PEEK 🫣</button>
+    <button style="font-size:18px;padding:16px 28px;border-radius:20px;" onclick="go('intro','page1'); startMusic()">Areyyy sunnn</button>
 </div>
 
 <!-- Text Pages -->
@@ -67,6 +67,111 @@ button:focus{outline:none;}
     <button id="no">No 😭</button>
   </div>
 </div>
+
+<!-- First Final Page -->
+<div class="page" id="final" style="background-image:url('https://files.catbox.moe/zx6mjl.jpg');">
+  <div class="card">
+    <h1>Yayyyyy 🥰</h1>
+    <p>Vaise tera hi faida hua yes bolke 😝</p>
+  </div>
+</div>
+
+<!-- Extra Image Page (Your final 1260x1260 image) -->
+<div class="page" id="extra" style="
+  background-image:url('https://files.catbox.moe/a5qbkr.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+">
+</div>
+
+<audio id="bgMusic" loop preload="auto" playsinline>
+  <source src="https://files.catbox.moe/068g8m.mp3" type="audio/mpeg">
+</audio>
+<audio id="clickSound" preload="auto">
+  <source src="CLICK_SOUND_URL.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const bgMusic=document.getElementById('bgMusic');
+const clickSound=document.getElementById('clickSound');
+let musicStarted=false;
+
+// Start music on first click
+function startMusic(){
+    if(!musicStarted){
+        bgMusic.volume=1;
+        bgMusic.play().catch(()=>{});
+        musicStarted=true;
+    }
+}
+
+document.body.addEventListener('click',()=>{startMusic();});
+
+document.querySelectorAll('button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    clickSound.currentTime=0;
+    clickSound.play().catch(()=>{});
+  });
+});
+
+function go(a,b){
+  const oldPage=document.getElementById(a);
+  const newPage=document.getElementById(b);
+  oldPage.classList.remove('active');
+  void newPage.offsetWidth;
+  newPage.classList.add('active');
+}
+
+// No button moves instantly on click, keeps Yes button clickable
+const noBtn=document.getElementById('no');
+const yesBtn=document.getElementById('yesBtn');
+noBtn.addEventListener('click', moveNo);
+function moveNo(){
+  const card=noBtn.parentElement;
+  const cardRect=card.getBoundingClientRect();
+  const yesRect=yesBtn.getBoundingClientRect();
+  let newTop,newLeft;
+  do{
+    newTop=Math.random()*(cardRect.height-noBtn.offsetHeight)+'px';
+    newLeft=Math.random()*(cardRect.width-noBtn.offsetWidth)+'px';
+  }while(overlap(newTop,newLeft,yesRect,cardRect));
+  requestAnimationFrame(()=>{
+    noBtn.style.top=newTop;
+    noBtn.style.left=newLeft;
+  });
+}
+function overlap(top,left,yesRect,cardRect){
+  const noTop=parseFloat(top)+cardRect.top;
+  const noLeft=parseFloat(left)+cardRect.left;
+  const noRight=noLeft+noBtn.offsetWidth;
+  const noBottom=noTop+noBtn.offsetHeight;
+  return !(noRight<yesRect.left || noLeft>yesRect.right || noBottom<yesRect.top || noTop>yesRect.bottom);
+}
+
+function celebrate(){
+  go('question','final');
+  for(let i=0;i<60;i++){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.innerHTML='🐥🐼';
+    h.style.left=Math.random()*100+'%';
+    h.style.animationDuration=(Math.random()*3+3)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  }
+  // Move to extra page after a delay
+  setTimeout(()=>{go('final','extra');}, 2500);
+}
+
+function stopMusic(){bgMusic.pause(); bgMusic.currentTime=0;}
+document.addEventListener('visibilitychange',()=>{if(document.hidden) stopMusic();});
+window.addEventListener('pagehide', stopMusic);
+window.addEventListener('beforeunload', stopMusic);
+</script>
+
+</body>
+</html></div>
 
 <!-- Final Page -->
 <div class="page" id="final" style="background-image:url('https://files.catbox.moe/zx6mjl.jpg');">
@@ -288,3 +393,4 @@ window.addEventListener('beforeunload', stopMusic);
 </body>
 
 </html>
+
