@@ -24,24 +24,19 @@ button:focus{outline:none;}
 .page.active h1 {opacity:1; transform:translateY(0); transition-delay:0.1s;}
 .page.active p {opacity:1; transform:translateY(0); transition-delay:0.35s;}
 .page.active button {opacity:1; transform:translateY(0); transition-delay:0.6s;}
-
-/* Intro page curtain effect */
-#intro button{transform:scaleX(0); transition:transform 1s ease;}
-#intro.active button{transform:scaleX(1);}
 </style>
 </head>
 <body>
 
-<!-- Intro Page -->
+<!-- Intro Page (just image) -->
 <div class="page active" id="intro" style="background-image:url('https://files.catbox.moe/8gbfrt.jpg');">
-    <button style="font-size:18px;padding:16px 28px;border-radius:20px;" onclick="go('intro','page1'); startMusic()">Areyyy sunnn</button>
 </div>
 
 <!-- Text Pages -->
 <div class="page" id="page1" style="background-image:url('https://files.catbox.moe/97akwb.jpg');">
   <div class="card">
     <h1><p>ANUSHKA!</p><p>Yaarr terse baat kar ke</p> <p>I feel soo happyyy!😸</p></h1>
-    <button onclick="go('page1','page2')">Aurr...</button>
+    <button onclick="go('page1','page2'); startMusic()">Aurr...</button>
   </div>
 </div>
 
@@ -67,6 +62,107 @@ button:focus{outline:none;}
     <button id="no">No 😭</button>
   </div>
 </div>
+
+<!-- First Final Page -->
+<div class="page" id="final" style="background-image:url('https://files.catbox.moe/zx6mjl.jpg');">
+  <div class="card">
+    <h1>Yayyyyy 🥰</h1>
+    <p>Vaise tera hi faida hua yes bolke 😝</p>
+  </div>
+</div>
+
+<!-- Extra Image Page -->
+<div class="page" id="extra" style="
+  background-image:url('https://files.catbox.moe/a5qbkr.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+">
+</div>
+
+<audio id="bgMusic" loop preload="auto" playsinline>
+  <source src="https://files.catbox.moe/068g8m.mp3" type="audio/mpeg">
+</audio>
+<audio id="clickSound" preload="auto">
+  <source src="CLICK_SOUND_URL.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const bgMusic=document.getElementById('bgMusic');
+const clickSound=document.getElementById('clickSound');
+let musicStarted=false;
+
+function startMusic(){
+    if(!musicStarted){
+        bgMusic.volume=1;
+        bgMusic.play().catch(()=>{});
+        musicStarted=true;
+    }
+}
+
+document.querySelectorAll('button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    clickSound.currentTime=0;
+    clickSound.play().catch(()=>{});
+  });
+});
+
+function go(a,b){
+  const oldPage=document.getElementById(a);
+  const newPage=document.getElementById(b);
+  oldPage.classList.remove('active');
+  void newPage.offsetWidth;
+  newPage.classList.add('active');
+}
+
+// No button moves on click
+const noBtn=document.getElementById('no');
+const yesBtn=document.getElementById('yesBtn');
+noBtn.addEventListener('click', moveNo);
+function moveNo(){
+  const card=noBtn.parentElement;
+  const cardRect=card.getBoundingClientRect();
+  const yesRect=yesBtn.getBoundingClientRect();
+  let newTop,newLeft;
+  do{
+    newTop=Math.random()*(cardRect.height-noBtn.offsetHeight)+'px';
+    newLeft=Math.random()*(cardRect.width-noBtn.offsetWidth)+'px';
+  }while(overlap(newTop,newLeft,yesRect,cardRect));
+  requestAnimationFrame(()=>{
+    noBtn.style.top=newTop;
+    noBtn.style.left=newLeft;
+  });
+}
+function overlap(top,left,yesRect,cardRect){
+  const noTop=parseFloat(top)+cardRect.top;
+  const noLeft=parseFloat(left)+cardRect.left;
+  const noRight=noLeft+noBtn.offsetWidth;
+  const noBottom=noTop+noBtn.offsetHeight;
+  return !(noRight<yesRect.left || noLeft>yesRect.right || noBottom<yesRect.top || noTop>yesRect.bottom);
+}
+
+function celebrate(){
+  go('question','final');
+  for(let i=0;i<60;i++){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.innerHTML='🐥🐼';
+    h.style.left=Math.random()*100+'%';
+    h.style.animationDuration=(Math.random()*3+3)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  }
+  setTimeout(()=>{go('final','extra');}, 2500);
+}
+
+function stopMusic(){bgMusic.pause(); bgMusic.currentTime=0;}
+document.addEventListener('visibilitychange',()=>{if(document.hidden) stopMusic();});
+window.addEventListener('pagehide', stopMusic);
+window.addEventListener('beforeunload', stopMusic);
+</script>
+
+</body>
+</html></div>
 
 <!-- First Final Page -->
 <div class="page" id="final" style="background-image:url('https://files.catbox.moe/zx6mjl.jpg');">
@@ -393,4 +489,5 @@ window.addEventListener('beforeunload', stopMusic);
 </body>
 
 </html>
+
 
