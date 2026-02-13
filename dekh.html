@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Sweetuuu💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Poppins',sans-serif;overflow:hidden}
+.page{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;pointer-events:none;transition:opacity .6s ease}
+.page.active{opacity:1;pointer-events:auto}
+.card{background:rgba(255,255,255,0);backdrop-filter:blur(0);padding:28px;border-radius:24px;max-width:420px;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,0.7);animation:pop .5s ease;position:relative}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+h1{margin:0 0 10px 0}
+button{border:none;padding:12px 22px;margin-top:20px;font-size:16px;border-radius:16px;cursor:pointer;background:rgba(30,144,255,0.85);color:#fff;backdrop-filter:blur(6px);box-shadow:0 10px 25px rgba(0,0,0,0.4);transition:.15s;outline:none}
+button:hover{transform:scale(1.08);background:rgba(30,144,255,0.95)}
+button:focus{outline:none;}
+#no{position:absolute;background:rgba(255,69,0,0.8); cursor:pointer;}
+.heart{position:fixed;bottom:-20px;font-size:22px;animation:float 6s linear infinite}
+@keyframes float{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-110vh);opacity:0}}
+
+/* Staggered text animation */
+.page h1, .page p, .page button {opacity:0; transform:translateY(20px); transition:all 0.6s ease;}
+.page.active h1 {opacity:1; transform:translateY(0); transition-delay:0.1s;}
+.page.active p {opacity:1; transform:translateY(0); transition-delay:0.35s;}
+.page.active button {opacity:1; transform:translateY(0); transition-delay:0.6s;}
+
+/* Intro page curtain effect */
+#intro button{transform:scaleX(0); transition:transform 1s ease;}
+#intro.active button{transform:scaleX(1);}
+</style>
+</head>
+<body>
+
+<!-- Intro Page -->
+<div class="page active" id="intro" style="background-image:url(https://files.catbox.moe/8gbfrt.jpg);">
+    <button style="font-size:18px;padding:16px 28px;border-radius:20px;" onclick="go('intro','page1')">Areyy sunnn</button>
+</div>
+
+<!-- Text Pages -->
+<div class="page" id="page1" style="background-image:url(https://files.catbox.moe/97akwb.jpg);">
+  <div class="card">
+    <h1><p>ANUSHKA!</p><p>Yaarr terse baat kar ke</p> <p>I feel soo happyyy!😸</p></h1>
+    <button onclick="go('page1','page2')">Aurr...</button>
+  </div>
+</div>
+
+<div class="page" id="page2" style="background-image:url(https://files.catbox.moe/7dkix1.jpg);">
+  <div class="card">
+    <h1>Tu meri kitti bakwas suntii 😭🫶</h1>
+    <button onclick="go('page2','page3')">Aurr naa...</button>
+  </div>
+</div>
+
+<div class="page" id="page3" style="background-image:url(https://files.catbox.moe/0h0nx8.jpg);">
+  <div class="card">
+    <h1>Aisa lagta tu sath hai toh yeh life kitni easy hai 🫂</h1>
+    <button onclick="go('page3','question')">Sooo...</button>
+  </div>
+</div>
+
+<!-- Question Page -->
+<div class="page" id="question" style="background-image:url(https://files.catbox.moe/qwwtuf.jpg);">
+  <div class="card" style="position:relative;height:220px;">
+    <h1>Will you be my galentine? 👉👈</h1>
+    <button id="yesBtn" style="position:relative;" onclick="celebrate()">Yes 💕</button>
+    <button id="no">No 😭</button>
+  </div>
+</div>
+
+<!-- First Final Page -->
+<div class="page" id="final" style="background-image:url(https://files.catbox.moe/zx6mjl.jpg);">
+  <div class="card">
+    <h1>Yayyyyy 🥰</h1>
+    <p>Vaise tera hi faida hua yes bolke 😝</p>
+  </div>
+</div>
+
+<!-- Extra Image Page (Your final 1260x1260 image) -->
+<div class="page" id="extra" style="
+  background-image:url('https://files.catbox.moe/a5qbkr.jpg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+">
+  <!-- Just the image -->
+</div>
+
+<audio id="bgMusic" loop preload="auto" playsinline>
+  <source src="https://files.catbox.moe/068g8m.mp3" type="audio/mpeg">
+</audio>
+<audio id="clickSound" preload="auto">
+  <source src="CLICK_SOUND_URL.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const bgMusic=document.getElementById('bgMusic');
+const clickSound=document.getElementById('clickSound');
+let musicStarted=false;
+
+document.body.addEventListener('click',()=>{if(!musicStarted){bgMusic.volume=1; bgMusic.play().catch(()=>{}); musicStarted=true;}});
+
+document.querySelectorAll('button').forEach(b=>{b.addEventListener('click',()=>{clickSound.currentTime=0; clickSound.play().catch(()=>{});});});
+
+function go(a,b){
+  const oldPage=document.getElementById(a);
+  const newPage=document.getElementById(b);
+  oldPage.classList.remove('active');
+  void newPage.offsetWidth;
+  newPage.classList.add('active');
+}
+
+// No button moves instantly on click, keeps Yes button clickable
+const noBtn=document.getElementById('no');
+const yesBtn=document.getElementById('yesBtn');
+noBtn.addEventListener('click', moveNo);
+function moveNo(){
+  const card=noBtn.parentElement;
+  const cardRect=card.getBoundingClientRect();
+  const yesRect=yesBtn.getBoundingClientRect();
+  let newTop,newLeft;
+  do{
+    newTop=Math.random()*(cardRect.height-noBtn.offsetHeight)+'px';
+    newLeft=Math.random()*(cardRect.width-noBtn.offsetWidth)+'px';
+  }while(overlap(newTop,newLeft,yesRect,cardRect));
+  requestAnimationFrame(()=>{
+    noBtn.style.top=newTop;
+    noBtn.style.left=newLeft;
+  });
+}
+function overlap(top,left,yesRect,cardRect){
+  const noTop=parseFloat(top)+cardRect.top;
+  const noLeft=parseFloat(left)+cardRect.left;
+  const noRight=noLeft+noBtn.offsetWidth;
+  const noBottom=noTop+noBtn.offsetHeight;
+  return !(noRight<yesRect.left || noLeft>yesRect.right || noBottom<yesRect.top || noTop>yesRect.bottom);
+}
+
+function celebrate(){
+  go('question','final');
+  for(let i=0;i<60;i++){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.innerHTML='🐥🐼';
+    h.style.left=Math.random()*100+'%';
+    h.style.animationDuration=(Math.random()*3+3)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  }
+  // Move to extra page after a delay
+  setTimeout(()=>{go('final','extra');}, 2500);
+}
+
+function stopMusic(){bgMusic.pause(); bgMusic.currentTime=0;}
+document.addEventListener('visibilitychange',()=>{if(document.hidden) stopMusic();});
+window.addEventListener('pagehide', stopMusic);
+window.addEventListener('beforeunload', stopMusic);
+</script>
+
+</body>
+</html>
